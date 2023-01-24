@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
+
+const printable string = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 
 func main() {
 	// Temporary test file
@@ -23,11 +26,67 @@ func main() {
 		words = append(words, scanner.Text())
 	}
 
-	// Process slice here
-	appended := addAfter.appendCharacter(words)
-	mangled := append(words, appended)
+	// Append Characters
+	appended := appendCharacter(words)
 
-	for _, word := range mangled {
+	// Prepend Characters
+	prepended := prependCharacter(words)
+
+	// Add newly created words to original
+	for _, word := range appended {
+		words = append(words, word)
+	}
+	for _, word := range prepended {
+		words = append(words, word)
+	}
+
+	// Print out to STDOUT
+	for _, word := range words {
 		fmt.Println(word)
 	}
+}
+
+// Append a characters to each word
+// :param words: Words to have characters appended to
+// :return: slice containing newly created words
+func appendCharacter(words []string) []string {
+	// Keep track of new entries
+	newWords := []string{}
+	var builder strings.Builder
+
+	// Iterate over words
+	for _, word := range words {
+		// Each printable character is possible
+		for _, character := range printable {
+
+			builder.WriteString(word)
+			builder.WriteRune(character)
+			newWords = append(newWords, builder.String())
+			builder.Reset()
+		}
+	}
+
+	return newWords
+}
+
+// Prepend a characters to each word
+// :param words: Words to have characters prepended to
+// :return: slice containing newly created words
+func prependCharacter(words []string) []string {
+	// Keep track of new entries
+	newWords := []string{}
+	var builder strings.Builder
+
+	// Iterate over words
+	for _, word := range words {
+		// Each printable character is possible
+		for _, character := range printable {
+			builder.WriteRune(character)
+			builder.WriteString(word)
+			newWords = append(newWords, builder.String())
+			builder.Reset()
+		}
+	}
+
+	return newWords
 }
