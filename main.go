@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	data, err := os.ReadFile("Tests/wordlist.txt")
+	data, err := os.ReadFile("tests/wordlist.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
