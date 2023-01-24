@@ -1,3 +1,3 @@
-module github.com/aqc1/VertiGo/modules
+module modules/addAfter
 
 go 1.18
