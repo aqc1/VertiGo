@@ -6,9 +6,15 @@ import (
 	"log"
 	"os"
 	"strings"
+	"unicode"
 )
 
-const printable string = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+// printable characters people actually use...
+// No \n or \t nonsense
+var (
+	printable string = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+	builder   strings.Builder
+)
 
 func main() {
 	// Temporary test file
@@ -32,11 +38,17 @@ func main() {
 	// Prepend Characters
 	prepended := prependCharacter(words)
 
+	// Toggle Case
+	toggled := toggleCase(words)
+
 	// Add newly created words to original
 	for _, word := range appended {
 		words = append(words, word)
 	}
 	for _, word := range prepended {
+		words = append(words, word)
+	}
+	for _, word := range toggled {
 		words = append(words, word)
 	}
 
@@ -52,7 +64,6 @@ func main() {
 func appendCharacter(words []string) []string {
 	// Keep track of new entries
 	newWords := []string{}
-	var builder strings.Builder
 
 	// Iterate over words
 	for _, word := range words {
@@ -75,7 +86,6 @@ func appendCharacter(words []string) []string {
 func prependCharacter(words []string) []string {
 	// Keep track of new entries
 	newWords := []string{}
-	var builder strings.Builder
 
 	// Iterate over words
 	for _, word := range words {
@@ -86,6 +96,31 @@ func prependCharacter(words []string) []string {
 			newWords = append(newWords, builder.String())
 			builder.Reset()
 		}
+	}
+
+	return newWords
+}
+
+// Toggle case of a word
+// :param words: Word to toggle the case of
+// :return: slice containing toggled words
+func toggleCase(words []string) []string {
+	// Keep track of new entries
+	newWords := []string{}
+
+	// Iterate over words
+	for _, word := range words {
+		// Each printable character is possible
+		for _, character := range word {
+			if unicode.IsUpper(character) {
+				character = rune(unicode.ToLower(rune(character)))
+			} else if unicode.IsLower(character) {
+				character = rune(unicode.ToUpper(rune(character)))
+			}
+			builder.WriteString(string(character))
+		}
+		newWords = append(newWords, builder.String())
+		builder.Reset()
 	}
 
 	return newWords
